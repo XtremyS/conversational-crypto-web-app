@@ -32,6 +32,12 @@ const coinMap: { [key: string]: string } = {
   xrp: "ripple",
   ripple: "ripple",
 };
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+}
 
 const App: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -72,7 +78,7 @@ const App: React.FC = () => {
     const coinKey = Object.keys(coinMap).find((key) =>
       lowerInput.includes(key)
     );
-    return coinMap[coinKey] || "bitcoin";
+    return coinMap[coinKey!] || "bitcoin";
   };
 
   const fetchPrice = async (coin: string) => {
@@ -262,7 +268,7 @@ Description: ${
   const handleMicClick = () => {
     const recognition = new (window.SpeechRecognition ||
       window.webkitSpeechRecognition)();
-    recognition.onresult = (event: SpeechRecognitionEvent) => {
+    recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
       setInput(transcript);
       handleSubmit({ preventDefault: () => {} } as React.FormEvent);
